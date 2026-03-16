@@ -27,19 +27,51 @@ extend({ Container, Graphics })
 
 const BOARD_PX = COLS * CELL_SIZE
 const BOARD_PY = ROWS * CELL_SIZE
-const PAD = 4
-const BORDER = 2
+const PAD = 6
+const BORDER = 6
+
+function multiplyColor(color: number, factor: number): number {
+  const r = Math.min(255, Math.max(0, ((color >> 16) & 0xff) * factor))
+  const g = Math.min(255, Math.max(0, ((color >> 8) & 0xff) * factor))
+  const b = Math.min(255, Math.max(0, (color & 0xff) * factor))
+  return ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff)
+}
 
 function drawCell(g: Graphics, x: number, y: number, color: number, isGhost = false) {
   const size = CELL_SIZE - 1
-  g.rect(x, y, size, size)
+  const radius = 4
+  const base = multiplyColor(color, 0.9)
+  const light = multiplyColor(color, 1.12)
+  const dark = multiplyColor(color, 0.65)
+
+  g.roundRect(x, y, size, size, radius)
   if (isGhost) {
-    g.fill({ color, alpha: 0.35 })
-    g.stroke({ width: 1, color: 0xffffff, alpha: 0.5 })
-  } else {
-    g.fill({ color })
-    g.stroke({ width: 1, color: 0x000000, alpha: 0.25 })
+    g.fill({ color: light, alpha: 0.28 })
+    g.stroke({ width: 1, color: 0xffffff, alpha: 0.4 })
+    return
   }
+
+  // Base wood block
+  g.fill({ color: base })
+  g.stroke({ width: 1.5, color: dark, alpha: 0.95 })
+
+  // Inner beveled face
+  const inset = 3
+  g.roundRect(x + inset, y + inset, size - inset * 2, size - inset * 2, radius - 1)
+  g.fill({ color: light, alpha: 0.95 })
+
+  // Top highlight strip
+  g.rect(x + inset, y + inset, size - inset * 2, (size - inset * 2) * 0.32)
+  g.fill({ color: 0xffffff, alpha: 0.20 })
+
+  // Bottom shadow strip
+  g.rect(
+    x + inset,
+    y + inset + (size - inset * 2) * 0.6,
+    size - inset * 2,
+    (size - inset * 2) * 0.4,
+  )
+  g.fill({ color: dark, alpha: 0.45 })
 }
 
 function BoardView({ board }: { board: Board }) {
@@ -117,9 +149,33 @@ function Playfield({ state }: { state: GameState }) {
 function BorderBg() {
   const draw = useCallback((g: Graphics) => {
     g.clear()
-    g.roundRect(0, 0, BOARD_PX + BORDER * 2, BOARD_PY + BORDER * 2, 4)
-    g.fill({ color: 0x1a1a2e })
-    g.stroke({ width: BORDER, color: 0x4a4a6a })
+
+    const outerRadius = 18
+    const innerRadius = 14
+
+    // Desk wood outer frame
+    g.roundRect(0, 0, BOARD_PX + BORDER * 2, BOARD_PY + BORDER * 2, outerRadius)
+    g.fill({ color: 0x3b2615 })
+    g.stroke({ width: 2, color: 0x1c120a, alpha: 0.9 })
+
+    // Inner lighter panel
+    const inset = 6
+    const innerW = BOARD_PX + BORDER * 2 - inset * 2
+    const innerH = BOARD_PY + BORDER * 2 - inset * 2
+    g.roundRect(inset, inset, innerW, innerH, innerRadius)
+    g.fill({ color: 0x705033 })
+
+    // Subtle vertical plank lines
+    const plankWidth = CELL_SIZE * 2
+    for (let x = inset + plankWidth; x < inset + innerW; x += plankWidth) {
+      g.moveTo(x, inset + 2)
+      g.lineTo(x, inset + innerH - 2)
+      g.stroke({ width: 1, color: 0x5a4129, alpha: 0.35 })
+    }
+
+    // Soft inner glow
+    g.roundRect(inset + 2, inset + 2, innerW - 4, innerH - 4, innerRadius - 2)
+    g.stroke({ width: 2, color: 0x8a6640, alpha: 0.45 })
   }, [])
   return <pixiGraphics draw={draw} />
 }
@@ -217,7 +273,7 @@ export default function TetrisStage() {
         <Application
           width={width}
           height={height}
-          background="#0f0f1a"
+          background={0x1b130c}
           antialias
         >
           <GameLoop setState={setState} />

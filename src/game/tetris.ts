@@ -21,14 +21,15 @@ const SHAPES: number[][][] = [
   [[0,0,1,0],[1,1,1,0],[0,0,0,0],[0,0,0,0]], // J
 ]
 
+// Warm wood-like palette for pieces
 export const PIECE_COLORS: number[] = [
-  0x00d4ff, // I cyan
-  0xf7d308, // O yellow
-  0x00e676, // S green
-  0xff1744, // Z red
-  0xaa00ff, // T purple
-  0xff9100, // L orange
-  0x2979ff, // J blue
+  0xc99a6b, // I - light oak
+  0xd9b583, // O - maple
+  0xb17a4b, // S - walnut
+  0x8c5a3a, // Z - deep mahogany
+  0xe0c19a, // T - birch
+  0xa26b3f, // L - teak
+  0x7b4a2a, // J - dark cherry
 ]
 
 export type PieceType = 0 | 1 | 2 | 3 | 4 | 5 | 6
