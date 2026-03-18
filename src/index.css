@@ -1,15 +1,15 @@
 :root {
-  --text: #5a4b3c;
-  --text-h: #2b1a10;
-  --bg: #f5eee2;
-  --border: #e0d2c0;
-  --code-bg: #efe3d2;
-  --accent: #b46a3c;
-  --accent-bg: rgba(180, 106, 60, 0.12);
-  --accent-border: rgba(180, 106, 60, 0.6);
+  --text: #6d5039;
+  --text-h: #3c2414;
+  --bg: #ead4ac;
+  --border: #b78d66;
+  --code-bg: #efd9b5;
+  --accent: #a35e33;
+  --accent-bg: rgba(163, 94, 51, 0.12);
+  --accent-border: rgba(163, 94, 51, 0.45);
   --social-bg: rgba(239, 227, 210, 0.7);
   --shadow:
-    rgba(0, 0, 0, 0.12) 0 14px 24px -8px, rgba(0, 0, 0, 0.08) 0 6px 10px -4px;
+    rgba(69, 40, 22, 0.18) 0 14px 24px -8px, rgba(69, 40, 22, 0.14) 0 6px 10px -4px;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -17,7 +17,7 @@
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -30,33 +30,12 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #e5d7c7;
-    --text-h: #fff4e6;
-    --bg: #120c07;
-    --border: #3b2b1c;
-    --code-bg: #261911;
-    --accent: #e39b5c;
-    --accent-bg: rgba(227, 155, 92, 0.16);
-    --accent-border: rgba(227, 155, 92, 0.7);
-    --social-bg: rgba(54, 37, 23, 0.7);
-    --shadow:
-      rgba(0, 0, 0, 0.7) 0 16px 28px -10px, rgba(0, 0, 0, 0.45) 0 8px 12px -6px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
 #root {
-  width: 1126px;
+  width: min(1440px, 100%);
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -64,6 +43,11 @@
 
 body {
   margin: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.7), transparent 22%),
+    radial-gradient(circle at 20% 20%, rgba(255, 222, 188, 0.42), transparent 28%),
+    linear-gradient(180deg, #f9efe3 0%, #ecd2b2 52%, #d5a273 100%);
 }
 
 h1,

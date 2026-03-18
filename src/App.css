@@ -1,114 +1,762 @@
 .app {
+  height: 100vh;
   min-height: 100vh;
-  padding: 24px;
+  padding: 16px 20px 18px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  justify-content: center;
+  gap: 16px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .header {
+  width: min(1400px, 100%);
   text-align: center;
+  padding: 18px 24px;
+  border: 1px solid rgba(143, 100, 65, 0.14);
+  border-radius: 30px;
+  background:
+    linear-gradient(180deg, rgba(255, 252, 247, 0.92), rgba(247, 236, 219, 0.82)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.4), transparent 48%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    0 22px 44px rgba(104, 65, 33, 0.10);
+  backdrop-filter: blur(16px);
 }
 
-.header h1 {
-  margin: 0 0 8px;
+.header-title {
+  margin: 0 0 6px;
   font-size: 2rem;
   color: var(--text-h);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 800;
 }
 
-.header p {
+.header-subtitle {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.76rem;
   color: var(--text);
+  opacity: 0.72;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .tetris-wrap {
+  width: min(1400px, 100%);
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  --board-ratio: 0.6275605214152701;
+  --side-panel-width: clamp(150px, 14.5vw, 184px);
+  --board-height: min(calc(100vh - 136px), calc((100vw - (var(--side-panel-width) * 2) - 78px) / var(--board-ratio)), 648px);
+  --board-width: calc(var(--board-height) * var(--board-ratio));
+  --board-shell-width: calc(var(--board-width) + 32px);
+}
+
+.tetris-shell {
+  display: grid;
+  grid-template-columns: minmax(var(--side-panel-width), 1fr) var(--board-shell-width) minmax(var(--side-panel-width), 1fr);
+  gap: 16px;
+  align-items: start;
+  width: 100%;
+  min-height: 0;
+  justify-content: center;
+}
+
+.tetris-panel {
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
+  gap: 14px;
+  padding: 16px 14px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  align-self: stretch;
+  border: 1px solid rgba(145, 102, 67, 0.11);
+  border-radius: 30px;
+  background:
+    linear-gradient(180deg, rgba(255, 252, 247, 0.92), rgba(245, 232, 214, 0.84)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.28), transparent 48%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.76),
+    0 24px 48px rgba(104, 65, 33, 0.10);
 }
 
-.tetris-ui {
+.tetris-panel::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 29px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+}
+
+.panel-intro {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.panel-kicker {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(176, 103, 40, 0.72);
+}
+
+.panel-title {
+  margin: 0;
+  font-size: 1.24rem;
+  letter-spacing: -0.04em;
+  line-height: 1.06;
+}
+
+.panel-copy,
+.panel-note {
+  color: rgba(85, 58, 39, 0.72);
+  line-height: 1.45;
+  font-size: 0.7rem;
+}
+
+.status-pill {
+  align-self: center;
+  margin-inline: auto;
+  min-width: 104px;
+  justify-content: center;
+  padding: 8px 14px;
+  border: 1px solid rgba(193, 141, 91, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 250, 243, 0.84);
+  color: #745038;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.68),
+    0 10px 22px rgba(160, 111, 62, 0.10);
+}
+
+.status-pill.is-playing {
+  color: #8f532a;
+  background: rgba(255, 233, 207, 0.9);
+}
+
+.status-pill.is-paused {
+  color: #7b5a2f;
+  background: linear-gradient(180deg, rgba(255, 245, 220, 0.94), rgba(241, 220, 167, 0.88));
+}
+
+.status-pill.is-gameover {
+  color: #834434;
+  background: rgba(255, 221, 213, 0.92);
+}
+
+.status-pill.is-clearing {
+  color: #8a581f;
+  background: linear-gradient(180deg, rgba(255, 242, 202, 0.96), rgba(255, 214, 128, 0.9));
+}
+
+.warning-card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 7px 9px;
+  border: 1px solid rgba(208, 121, 56, 0.16);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 241, 220, 0.96), rgba(255, 223, 177, 0.88));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 251, 235, 0.8),
+    0 12px 24px rgba(188, 108, 45, 0.10);
+}
+
+.warning-kicker {
+  font-size: 0.6rem;
+  color: #9d4f1f;
+  letter-spacing: 0.16em;
+}
+
+.warning-text {
+  font-size: 0.68rem;
+  line-height: 1.25;
+  color: #6c3b1d;
+  font-weight: 600;
+}
+
+.warning-progress {
+  height: 6px;
+  margin-top: 2px;
+  border-radius: 999px;
+  background: rgba(139, 73, 29, 0.14);
+}
+
+.warning-progress .MuiLinearProgress-bar {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffbe66, #dc7f33);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  padding: 10px 8px;
+  border: 1px solid rgba(120, 81, 47, 0.08);
+  border-radius: 22px;
+  background: rgba(255, 253, 248, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 12px 26px rgba(110, 72, 37, 0.05);
+}
+
+.stat-label {
+  font-size: 0.58rem;
+  color: rgba(97, 64, 37, 0.76);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  font-size: 1.12rem;
+  color: #4d2b18;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.tetris-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.btn {
+  min-height: 38px;
+  font-size: 0.68rem;
+  padding: 8px 10px;
+  border: 1px solid rgba(146, 93, 50, 0.14);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(233, 167, 109, 0.96), rgba(205, 122, 68, 0.96));
+  color: #fffaf4;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 244, 227, 0.5),
+    0 12px 24px rgba(98, 54, 23, 0.14);
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    opacity 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 244, 227, 0.58),
+    0 14px 28px rgba(98, 54, 23, 0.16);
+}
+
+.btn:disabled {
+  cursor: default;
+  opacity: 0.48;
+  box-shadow: none;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, #f3ae73, #cf7c44);
+}
+
+.btn-secondary {
+  background: linear-gradient(180deg, rgba(248, 234, 216, 0.98), rgba(230, 205, 176, 0.94));
+  color: #6d472d;
+}
+
+.tetris-board-column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: stretch;
+  min-width: 0;
+  min-height: 0;
+  width: var(--board-shell-width);
+  align-self: stretch;
+}
+
+.board-meta {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  min-height: 44px;
+  border: 1px solid rgba(132, 91, 56, 0.10);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 251, 245, 0.9), rgba(248, 237, 220, 0.8)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.28), transparent 52%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 14px 28px rgba(69, 40, 20, 0.08);
+}
+
+.board-meta-label,
+.board-meta-value {
+  font-size: 0.54rem;
+  line-height: 1.15;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.board-meta-label {
+  opacity: 0.86;
+  flex: 0 0 auto;
+}
+
+.board-meta-value {
+  color: #5f341d;
+  flex: 1 1 auto;
+  text-align: right;
+}
+
+.tetris-board-shell {
+  position: relative;
+  width: var(--board-shell-width);
+  flex: 0 0 auto;
+  min-height: 0;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  padding: 14px;
+  border: 1px solid rgba(119, 79, 47, 0.06);
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 50% 8%, rgba(255, 249, 235, 0.32), transparent 26%),
+    radial-gradient(circle at 50% 14%, rgba(255, 245, 224, 0.58), transparent 24%),
+    linear-gradient(180deg, rgba(240, 213, 177, 0.22), rgba(163, 114, 71, 0.08)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.14), transparent 48%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 250, 240, 0.6),
+    0 28px 52px rgba(86, 48, 22, 0.16),
+    0 8px 18px rgba(255, 242, 219, 0.1);
+  transition: transform 0.12s ease-out;
 }
 
-.tetris-score {
-  display: flex;
-  gap: 20px;
-  font-size: 15px;
-  color: var(--text);
+.tetris-board-shell::before {
+  content: none;
 }
 
-.tetris-score strong {
-  color: var(--accent);
-  margin-left: 4px;
-}
-
-.tetris-actions .btn {
-  font-size: 15px;
-  padding: 8px 20px;
-  border-radius: 8px;
-  border: 2px solid var(--border);
-  background: var(--bg);
-  color: var(--text-h);
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-}
-
-.tetris-actions .btn:hover {
-  border-color: var(--accent-border);
-  background: var(--accent-bg);
-}
-
-.tetris-actions .btn-primary {
-  border-color: var(--accent);
-  background: var(--accent-bg);
-  color: var(--accent);
-}
-
-.tetris-actions .btn-primary:hover {
-  background: rgba(170, 59, 255, 0.2);
-}
-
-.tetris-keys {
-  font-size: 12px;
-  color: var(--text);
-  opacity: 0.85;
+.tetris-board-shell::after {
+  content: '';
+  position: absolute;
+  left: 26px;
+  right: 26px;
+  bottom: 14px;
+  height: 16px;
+  background: linear-gradient(180deg, rgba(79, 43, 22, 0.1), rgba(46, 23, 11, 0.16));
+  filter: blur(8px);
+  pointer-events: none;
 }
 
 .tetris-canvas-wrap {
-  border-radius: 8px;
+  border: 6px solid #6b3b23;
+  border-radius: 28px;
   overflow: hidden;
-  box-shadow: var(--shadow);
+  flex-shrink: 0;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 240, 213, 0.18),
+    0 18px 34px rgba(68, 34, 16, 0.16);
 }
 
 .tetris-canvas-wrap canvas {
   display: block;
   max-width: 100%;
+  width: var(--board-width);
+  height: var(--board-height);
 }
 
 .tetris-overlay {
   position: absolute;
-  inset: 0;
+  inset: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(46, 24, 14, 0.06), rgba(46, 24, 14, 0.16));
   pointer-events: none;
 }
 
 .tetris-overlay span {
   padding: 12px 24px;
-  background: rgba(0, 0, 0, 0.75);
-  color: #fff;
-  font-size: 1.25rem;
-  font-weight: 600;
-  border-radius: 8px;
+  border: 1px solid rgba(255, 241, 220, 0.14);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(108, 61, 35, 0.96), rgba(86, 47, 28, 0.94));
+  color: #f8ead1;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 239, 210, 0.18),
+    0 18px 30px rgba(33, 16, 9, 0.18);
+}
+
+.info-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 10px;
+  border: 1px solid rgba(128, 86, 51, 0.08);
+  border-radius: 22px;
+  background: rgba(255, 253, 248, 0.56);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 24px rgba(109, 71, 37, 0.05);
+}
+
+.info-card:last-child {
+  min-height: 0;
+}
+
+.card-title {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(92, 53, 27, 0.72);
+}
+
+.piece-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.piece-preview.is-compact {
+  gap: 6px;
+}
+
+.piece-preview.is-disabled {
+  opacity: 0.62;
+}
+
+.piece-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  width: 88px;
+}
+
+.piece-preview.is-compact .piece-grid {
+  width: 72px;
+}
+
+.piece-cell {
+  aspect-ratio: 1;
+  border: 1px solid rgba(105, 68, 40, 0.16);
+  border-radius: 7px;
+  background: rgba(224, 200, 164, 0.2);
+}
+
+.piece-cell.is-filled {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 211, 0.34),
+    3px 3px 0 rgba(73, 37, 18, 0.18);
+  filter: saturate(0.88) brightness(0.94);
+}
+
+.piece-caption {
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #61371f;
+  text-align: center;
+}
+
+.controls-tip {
+  font-size: 0.6rem;
+  color: rgba(94, 63, 37, 0.74);
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.queue-stack {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.queue-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border: 1px solid rgba(128, 88, 53, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 252, 246, 0.64);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.queue-index {
+  min-width: 0;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(92, 58, 32, 0.72);
+  text-align: center;
+}
+
+.controls-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.control-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(128, 88, 53, 0.06);
+  border-radius: 16px;
+  background: rgba(255, 252, 246, 0.58);
+  font-size: 0.72rem;
+}
+
+@media (min-width: 921px) {
+  .panel-copy {
+    display: none;
+  }
+}
+
+.control-row:last-child {
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(128, 88, 53, 0.06);
+}
+
+.control-row strong {
+  color: #58311c;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+@media (max-width: 920px) {
+  .tetris-shell {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .tetris-panel,
+  .tetris-board-column {
+    width: 100%;
+  }
+
+  .tetris-board-shell {
+    width: 100%;
+  }
+
+  .board-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .board-meta-value {
+    text-align: left;
+  }
+
+  .tetris-canvas-wrap canvas {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .app {
+    padding-inline: 12px;
+  }
+
+  .header {
+    padding: 12px;
+  }
+
+  .header-title {
+    font-size: 1.45rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tetris-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .queue-card {
+    padding: 7px 6px;
+  }
+}
+
+@media (max-height: 920px) {
+  .app {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    gap: 8px;
+  }
+
+  .header {
+    padding: 8px 12px;
+  }
+
+  .header-title {
+    font-size: 1.32rem;
+    margin-bottom: 1px;
+  }
+
+  .header-subtitle {
+    font-size: 0.66rem;
+  }
+
+  .tetris-shell {
+    gap: 10px;
+  }
+
+  .tetris-panel {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .panel-title {
+    font-size: 0.94rem;
+  }
+
+  .panel-copy,
+  .panel-note {
+    font-size: 0.64rem;
+  }
+
+  .card-title,
+  .panel-kicker,
+  .board-meta-label,
+  .board-meta-value {
+    font-size: 0.5rem;
+  }
+
+  .board-meta {
+    padding: 8px 10px;
+  }
+
+  .tetris-board-shell {
+    padding: 10px;
+  }
+
+  .tetris-canvas-wrap canvas {
+    height: min(calc(100vh - 144px), 540px);
+    width: auto;
+  }
+
+  .stats-grid {
+    gap: 5px;
+  }
+
+  .stat-card,
+  .info-card,
+  .queue-card {
+    padding: 7px;
+  }
+
+  .queue-stack {
+    gap: 4px;
+  }
+
+  .stat-value {
+    font-size: 0.86rem;
+  }
+
+  .piece-grid {
+    width: 64px;
+  }
+
+  .piece-preview.is-compact .piece-grid {
+    width: 52px;
+  }
+
+  .piece-caption,
+  .controls-tip,
+  .queue-index,
+  .control-row {
+    font-size: 0.54rem;
+  }
+
+  .btn {
+    min-height: 31px;
+    font-size: 0.6rem;
+    padding: 6px 7px;
+  }
+
+  .panel-intro,
+  .tetris-panel:last-child .info-card:last-child {
+    display: none;
+  }
+}
+
+@media (max-height: 820px) and (min-width: 921px) {
+  .header-subtitle,
+  .tetris-panel .panel-intro {
+    display: none;
+  }
+
+  .tetris-shell {
+    gap: 6px;
+  }
+
+  .tetris-panel {
+    padding: 7px;
+    gap: 5px;
+  }
+
+  .board-meta {
+    padding: 6px 8px;
+  }
+
+  .tetris-canvas-wrap canvas {
+    height: min(calc(100vh - 104px), 500px);
+  }
+
+  .piece-grid {
+    width: 58px;
+  }
+
+  .piece-preview.is-compact .piece-grid {
+    width: 48px;
+  }
+
+  .stat-card,
+  .info-card,
+  .queue-card {
+    padding: 6px;
+  }
+
+  .queue-stack {
+    gap: 4px;
+  }
 }
